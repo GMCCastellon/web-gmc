@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupo Mágico de Castellón (GMC)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --magia-verde-principal: #a5d610; 
+            --magia-verde-oscuro: #7cb342;    
+            --magia-oro: #d4af37; 
+        }
+        
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+
+        /* NAVEGACIÓN */
+        .navbar { 
+            background: rgba(18, 18, 18, 0.95) !important; 
+            border-bottom: 3px solid var(--magia-verde-principal);
+            padding: 15px 0;
+            z-index: 1050;
+        }
+        .navbar-brand { color: var(--magia-verde-principal) !important; font-weight: bold; }
+        .nav-link { color: white !important; font-weight: 600; margin: 0 10px; position: relative; }
+        .nav-link:hover { color: var(--magia-verde-principal) !important; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0;
+            background-color: var(--magia-verde-principal); transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        /* BOTÓN MENÚ MÓVIL */
+        .navbar-toggler { border: 2px solid var(--magia-verde-principal) !important; }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(165, 214, 16, 1)' stroke-width='3' stroke-linecap='round' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
+        }
+
+        /* PORTADA */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .video-background {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100vw; height: 56.25vw;
+            min-height: 100vh; min-width: 177.77vh;
+            transform: translate(-50%, -50%);
+            z-index: -1; pointer-events: none;
+        }
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 0;
+        }
+        .hero-content { position: relative; z-index: 1; text-align: center; }
+        .logo-gmc { max-width: 250px; filter: drop-shadow(0 0 15px rgba(165, 214, 16, 0.5)); }
+
+        /* SECCIONES VIDEO */
+        .video-container-full {
+    position: relative;
+    width: 100%;
+    height: auto; /* Cambiado de 0 a auto */
+    overflow: hidden;
+    background: #000;
+    line-height: 0; /* Elimina espacios extra en la base */
+}
+
+/* Añade esto para que el video sea fluido */
+.video-container-full video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.video-background video, .junta-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Para que el fondo llene siempre la pantalla */
+}
+
+        /* JUNTA DIRECTIVA */
+.junta-section {
+    position: relative;
+    padding: 90px 0;
+    color: white;
+    overflow: hidden;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+}
+
+/* Contenedor del video: ahora ocupa el 100% de su padre (.junta-section) */
+.junta-video-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* El truco mágico: object-fit cover */
+.video-estilo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Esto estira el video para cubrir todo sin deformarlo */
+    object-position: center;
+}
+
+.junta-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: -1;
+}
+
+        /* GALERÍA */
+        .galeria-item { position: relative; overflow: hidden; border-radius: 10px; margin-bottom: 20px; }
+        .galeria-img { 
+            width: 100%; height: 250px; object-fit: cover; 
+            transition: transform 0.5s ease; border: 2px solid #eee;
+        }
+        .galeria-item:hover .galeria-img { transform: scale(1.05); border-color: var(--magia-verde-principal); }
+        .foto-numero {
+            position: absolute; top: 10px; left: 10px;
+            background: var(--magia-verde-principal); color: black;
+            font-weight: bold; padding: 2px 10px; border-radius: 5px; font-size: 0.9rem;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* ESTILOS GENERALES */
+        .section-padding { padding: 90px 0; }
+        .titulo-verde { color: var(--magia-verde-oscuro); font-weight: bold; text-transform: uppercase; margin-bottom: 40px; }
+        .circular-img { 
+            width: 160px; height: 160px; border-radius: 50%; object-fit: cover; 
+            border: 5px solid var(--magia-verde-principal); margin-bottom: 15px; background: white;
+        }
+        .btn-magia { 
+            background-color: var(--magia-verde-principal); color: black; 
+            font-weight: bold; border-radius: 50px; padding: 12px 35px; border: none;
+        }
+        .card-actividad { border: none; border-radius: 15px; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+		.card-bg-image {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  color: white; /* Cambiamos el texto base a blanco para contraste */
+}
+
+/* Superposición oscura para garantizar que el texto se lea bien */
+.card-bg-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6); /* Ajusta la opacidad (0.6) según necesites */
+  z-index: 1;
+}
+
+/* Asegurar que el contenido esté por encima de la superposición */
+.card-bg-image .card-body-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ajustes de color para texto sobre fondo oscuro */
+.card-bg-image h5,
+.card-bg-image p.text-muted {
+  color: #fff !important; /* Forzamos blanco */
+}
+/* Mantenemos el color verde para el icono y el subtítulo superior si quieres, o los pones blancos */
+.card-bg-image .fas,
+.card-bg-image h4 {
+    color: #fff !important; /* Opcional: poner también iconos y h4 en blanco */
+}
+.circular-img {
+    transition: transform 0.3s ease;
+}
+
+.circular-img:hover {
+    transform: scale(1.1);
+    border-color: #ffffff; /* Brillo extra al pasar el ratón */
+}
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#inicio">GMC CASTELLÓN</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto text-uppercase">
+                <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#quienes">Nosotros</a></li>
+                <li class="nav-item"><a class="nav-link" href="#junta">Junta</a></li>
+                <li class="nav-item"><a class="nav-link" href="#actividades">Actividades</a></li>
+                <li class="nav-item"><a class="nav-link" href="#galeria">Galería</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<header id="inicio" class="hero-section">
+<div class="video-background">
+    <video autoplay muted loop playsinline width="100%" height="100%">
+        <source src="videos/portada-fondo.mp4" type="video/mp4">
+        Tu navegador no soporta la reproducción de video.
+    </video>
+</div>
+    <div class="overlay"></div>
+    <div class="hero-content">
+        <img src="imagenes/logo.webp" alt="Logo GMC" class="logo-gmc mb-4">
+        <h1 class="display-2 fw-bold">Grupo Mágico de Castellón</h1>
+        <p class="fs-3 fw-light">30 años creando ilusiones en nuestra tierra.</p>
+    </div>
+</header>
+
+<div class="video-container-full">
+    <video autoplay muted loop playsinline class="video-finca">
+        <source src="videos/GMC-fondo.mp4" type="video/mp4">
+        Tu navegador no soporta el video.
+    </video>
+</div>
+
+<section id="quienes" class="section-padding bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 mb-4 mb-lg-0 text-center">
+                <img src="imagenes/quienes-somos.webp" alt="Grupo Mágico de Castellón en acción" 
+                     class="img-fluid shadow-lg rounded" 
+                     style="aspect-ratio: 1 / 1; object-fit: cover; border: 8px solid white;">
+            </div>
+            
+            <div class="col-lg-7 text-center text-lg-start ps-lg-5">
+                <h2 class="titulo-verde">Bienvenidos al punto de encuentro</h2>
+                <p class="lead">
+                    Somos una asociación sin ánimo de lucro dedicada a promover, dignificar y compartir el arte de la magia en todas sus facetas. 
+                    Desde la cartomagia más íntima hasta las grandes ilusiones.
+                </p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <i class="fas fa-wand-sparkles fa-2x mb-2" style="color: var(--magia-verde-principal);"></i>
+                        <h6 class="fw-bold">Fomentar</h6>
+                        <p class="small">Dignificamos el ilusionismo como arte.</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <i class="fas fa-hands-helping fa-2x mb-2" style="color: var(--magia-verde-principal);"></i>
+                        <h6 class="fw-bold">Compartir</h6>
+                        <p class="small">Contacto con entidades mágicas.</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <i class="fas fa-medal fa-2x mb-2" style="color: var(--magia-verde-principal);"></i>
+                        <h6 class="fw-bold">Prestigio</h6>
+                        <p class="small">La magia como herramienta social.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="junta" class="junta-section text-center">
+    <div class="junta-video-bg">
+        <video autoplay muted loop playsinline poster="img/fallback-fondo.jpg" class="video-estilo">
+            <source src="videos/luces-fondo.mp4" type="video/mp4">
+            Tu navegador no soporta video.
+        </video>
+    </div>
+    <div class="junta-overlay"></div>
+    <div class="container">
+        <h2 class="titulo-verde" style="color: var(--magia-verde-principal);">Junta Directiva</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+    <a href="https://www.magoivan.com" target="_blank" rel="noopener noreferrer">
+        <img src="imagenes/mago-ivan-arribas.webp" class="circular-img" alt="Iván Arribas" style="cursor: pointer;">
+    </a>
+    <h6>Iván Arribas</h6>
+    <p class="small text-light">Presidente</p>
+</div>
+            <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+        <a href="https://www.instagram.com/adri_kostu/" target="_blank" rel="noopener noreferrer">
+            <img src="imagenes/adrian.webp" class="circular-img" alt="Adrián Costumero" style="cursor: pointer;">
+        </a>
+        <h6>Adrián Costumero</h6>
+        <p class="small text-light">Secretario</p>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+        <a href="https://www.instagram.com/davidcs84/" target="_blank" rel="noopener noreferrer">
+            <img src="imagenes/david.webp" class="circular-img" alt="David Ruiz" style="cursor: pointer;">
+        </a>
+        <h6>David Ruiz</h6>
+        <p class="small text-light">Tesorero</p>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+        <a href="https://www.instagram.com/magdani72/" target="_blank" rel="noopener noreferrer">
+            <img src="imagenes/dani.webp" class="circular-img" alt="Daniel Hernández" style="cursor: pointer;">
+        </a>
+        <h6>Daniel Hernández</h6>
+        <p class="small text-light">Vocal</p>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-4">
+        <a href="https://mago-jula.blogspot.com/" target="_blank" rel="noopener noreferrer">
+            <img src="imagenes/javier.webp" class="circular-img" alt="Javier Hernández" style="cursor: pointer;">
+        </a>
+        <h6>Javier Hernández</h6>
+        <p class="small text-light">Vocal</p>
+    </div>
+        </div>
+    </div>
+</section>
+
+<section id="actividades" class="section-padding bg-light">
+    <div class="container text-center">
+        <h2 class="titulo-verde mb-5">Actividades que ofrecemos</h2>
+
+        <div class="row g-4 text-start">
+            
+            <div class="col-md-6">
+                <div class="card h-100 p-4 card-actividad shadow-sm border-0 card-bg-image" 
+     style="background-image: url('imagenes/festival.svg');">
+                    
+                    <div class="card-body-content">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-university fa-2x me-3 text-white"></i>
+                            <h4 class="m-0 text-uppercase fw-bold text-white" style="font-size: 1.1rem;">Ayuntamientos</h4>
+                        </div>
+                        <h5 class="fw-bold mb-3 text-white">Festival de magia y proyectos mágicos</h5>
+                        <p class="text-white opacity-75"><strong>Varios magos en escena con diferentes disciplinas mágicas</strong> como magia visual, magia cómica, mentalismo... Durante más de treinta años hemos llenado el Teatre del Raval de Castellón. Ahora, en tu localidad, puedes tener este increíble festival mágico.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 p-4 card-actividad shadow-sm border-0 card-bg-image"
+     style="background-image: url('imagenes/rural.svg');"> 
+                    
+    <div class="card-body-content">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-map-marked-alt fa-2x me-3 text-white"></i>
+                            <h4 class="m-0 text-uppercase fw-bold text-white" style="font-size: 1.1rem;">Ayuntamientos</h4>
+                        </div>
+                        <h5 class="fw-bold mb-3 text-white">Rural mágico</h5>
+                        <p class="text-white opacity-75">Una jornada de magia para zonas del interior. <strong>Talleres de magia, magia de cerca y estaciones mágicas itinerantes</strong> en los enclaves más estratégicos de la localidad. <br><em>No instalamos escenarios. El pueblo es el escenario.</em></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 p-4 card-actividad shadow-sm border-0 card-bg-image" 
+     style="background-image: url('imagenes/shows.svg');">
+                    
+                    <div class="card-body-content">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-building fa-2x me-3 text-white"></i>
+                            <h4 class="m-0 text-uppercase fw-bold text-white" style="font-size: 1.1rem;">Entidades, empresas y particulares</h4>
+                        </div>
+                        <h5 class="fw-bold mb-3 text-white">Shows de magia</h5>
+                        <p class="text-white opacity-75">Contamos con los <strong>mejores magos de la provincia</strong>. Contrata magia de cerca, espectáculos de magia unipersonales para tu evento.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+               <div class="card h-100 p-4 card-actividad shadow-sm border-0 card-bg-image" 
+     style="background-image: url('imagenes/otras.svg');">
+                    
+                    <div class="card-body-content">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-hands-helping fa-2x me-3 text-white"></i>
+                            <h4 class="m-0 text-uppercase fw-bold text-white" style="font-size: 1.1rem;">Para asociaciones y entidades</h4>
+                        </div>
+                        <h5 class="fw-bold mb-3 text-white">Otras actividades</h5>
+                        <p class="text-white opacity-75">Realizamos colaboraciones con otras entidades.<strong>Talleres de magia, proyectos adaptados, actuaciones de magia personalizadas</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 pt-4">
+            <h5 class="mb-3 fw-bold">¿Quieres saber más?</h5>
+            <a href="#contacto" class="btn btn-magia shadow-lg">CONTACTA</a>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding bg-white">
+    <div class="container text-center">
+        <h2 class="titulo-verde">Nuestra Magia en Acción</h2>
+        
+        <div class="video-container-full shadow-lg rounded" style="position: relative; overflow: hidden; height: auto; padding-bottom: 0;">
+            
+            <button id="btn-sonido" class="btn-control-audio" style="position: absolute; bottom: 20px; right: 20px; z-index: 999; background: #a5d610; color: black; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); pointer-events: auto;">
+                <i class="fas fa-volume-mute"></i> <span>Activar Sonido</span>
+            </button>
+
+            <video id="video-promo" muted loop playsinline style="width: 100%; display: block; background: #000;">
+                <source src="videos/festival-de-magia-promo.mp4" type="video/mp4">
+                Tu navegador no soporta el video.
+            </video>
+        </div>
+    </div>
+</section>
+
+<script>
+(function() {
+    // Usamos una función anónima para no chocar con otros scripts
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('video-promo');
+        const btnSonido = document.getElementById('btn-sonido');
+        const btnIcon = btnSonido.querySelector('i');
+        const btnText = btnSonido.querySelector('span');
+
+        if (!video || !btnSonido) return;
+
+        // 1. Asegurar que el video intente reproducirse al cargar
+        video.play().catch(() => console.log("Esperando scroll para iniciar..."));
+
+        // 2. Observer para Autoplay/Pausa inteligente
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(video);
+
+        // 3. Lógica del Botón de Sonido (CORREGIDA)
+        btnSonido.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Evita que el clic se pierda en capas superiores
+
+            if (video.muted) {
+                video.muted = false;
+                video.volume = 1.0;
+                btnIcon.className = 'fas fa-volume-up';
+                btnText.innerText = 'Silenciar';
+                btnSonido.style.background = '#ffffff';
+            } else {
+                video.muted = true;
+                btnIcon.className = 'fas fa-volume-mute';
+                btnText.innerText = 'Activar Sonido';
+                btnSonido.style.background = '#a5d610';
+            }
+        };
+    });
+})();
+</script>
+
+<section id="galeria" class="section-padding bg-light">
+    <div class="container text-center">
+        <h2 class="titulo-verde">Galería de Momentos Mágicos</h2>
+        <div class="row">
+            <script>
+                // Mantenemos el límite en 28
+                for (let i = 1; i <= 28; i++) {
+                    // MODIFICADO: Ahora apunta a imagenes/fotoX.webp
+                    document.write(`
+                        <div class="col-lg-3 col-md-4 col-6 mb-4">
+                            <div class="galeria-item shadow-sm">
+                                <span class="foto-numero">${i}</span>
+                                <img src="imagenes/foto${i}.webp" class="galeria-img" alt="Evento Mágico ${i}" onerror="this.src='https://via.placeholder.com/400x300?text=GMC+Castellón+${i}'">
+                            </div>
+                        </div>
+                    `);
+                }
+            </script>
+        </div>
+    </div>
+</section>
+
+<footer id="contacto" class="section-padding bg-white border-top">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-5 mb-4 mb-md-0">
+                <div class="pe-lg-5">
+                    <img src="imagenes/contacto.webp" 
+                         alt="Contacto Grupo Mágico Castellón" 
+                         class="img-fluid shadow-lg" 
+                         style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 15px; border: 5px solid #f8f9fa;">
+                </div>
+            </div>
+
+            <div class="col-md-7 text-center text-md-start">
+                <h3 class="fw-bold titulo-verde mb-4">Contacto Directo</h3>
+                
+                <div class="info-contacto mb-4">
+                    <p class="fs-5 mb-3">
+                        <i class="fas fa-envelope me-3 text-success"></i>
+                        <a href="mailto:info@grupomagicocastellon.com" class="text-decoration-none text-dark fw-bold">info@grupomagicocastellon.com</a>
+                    </p>
+                    <p class="fs-5 mb-3">
+                        <i class="fas fa-phone me-3 text-success"></i>
+                        <a href="tel:+34610917620" class="text-decoration-none text-dark">610 917 620</a> / 
+                        <a href="tel:+34649790900" class="text-decoration-none text-dark">649 790 900</a>
+                    </p>
+                    <p class="text-muted mt-4">
+                        <i class="fas fa-id-card me-2"></i> <strong>CIF:</strong> G-12510681
+                    </p>
+                </div>
+
+                <hr class="my-4" style="max-width: 100px; margin: 0 auto; border-top: 3px solid var(--magia-verde-principal);">
+
+                <h5 class="mb-3 fw-bold">Síguenos en nuestras redes</h5>
+                <div class="redes-sociales">
+                    <a href="https://www.facebook.com/Grupomagicocastellon" target="_blank" class="btn btn-outline-dark btn-lg rounded-circle me-2" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/grupomagicocastellon/" target="_blank" class="btn btn-outline-dark btn-lg rounded-circle me-2" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@GRUPOMAGICODECASTELLON" target="_blank" class="btn btn-outline-dark btn-lg rounded-circle" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+                
+                <p class="small text-muted mt-5">© 2024 Grupo Mágico de Castellón. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.querySelector('.js-video-autoplay');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // El video entra en el viewport
+                video.play().catch(error => {
+                    console.log("El navegador bloqueó el autoplay: ", error);
+                });
+            } else {
+                // El video sale del viewport (opcional: pausar para ahorrar CPU)
+                video.pause();
+            }
+        });
+    }, { threshold: 0.5 }); // Se activa cuando el 50% del video es visible
+
+    if (video) {
+        observer.observe(video);
+    }
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
